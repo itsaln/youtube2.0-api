@@ -1,0 +1,7 @@
+TODO:
+[x] - User, Video, Comments
+[x] - Authorization
+[] - Get user, most popular channel by subscribers
+[] - Video add, edit, remove, list [user private]
+[] - Video upload
+[] - Get all videos, most popular by view
