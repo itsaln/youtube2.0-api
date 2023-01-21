@@ -10,14 +10,14 @@ export class UserModel extends TimeStamps {
 	@prop()
 	password: string
 
-	@prop({ unique: true })
+	@prop()
 	name: string
 
 	@prop()
 	isVerified: boolean
 
-	@prop()
-	subscribersCount: number
+	@prop({ default: 0 })
+	subscribersCount?: number
 
 	@prop()
 	description: string
