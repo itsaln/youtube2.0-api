@@ -51,7 +51,10 @@ export class UserService {
 	}
 
 	async getMostPopular() {
-		return await this.UserModel.find({ subscribersCount: { $gt: 0 } }, '-password -__v')
+		return await this.UserModel.find(
+			{ subscribersCount: { $gt: 0 } },
+			'-password -__v'
+		)
 			.sort({
 				subscribersCount: -1
 			})
