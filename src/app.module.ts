@@ -8,6 +8,7 @@ import { AuthModule } from '@app/auth/auth.module'
 import { UserModule } from '@app/user/user.module'
 import { VideoModule } from '@app/video/video.module'
 import { CommentModule } from '@app/comment/comment.module'
+import { MediaModule } from '@app/media/media.module'
 
 @Module({
 	controllers: [AppController],
@@ -22,8 +23,8 @@ import { CommentModule } from '@app/comment/comment.module'
 		AuthModule,
 		UserModule,
 		VideoModule,
-		CommentModule
+		CommentModule,
+		MediaModule
 	]
 })
-export class AppModule {
-}
+export class AppModule {}
