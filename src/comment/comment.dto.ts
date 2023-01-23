@@ -5,6 +5,8 @@ export class CommentDto {
 	@IsString()
 	name: string
 
-	@IsObjectId()
+	@IsObjectId({
+		message: 'videoId must be a mongodb ObjectId'
+	})
 	videoId: string
 }

@@ -64,17 +64,6 @@ export class VideoController {
 		return this.videoService.create(_id)
 	}
 
-	@UsePipes(new ValidationPipe())
-	@HttpCode(200)
-	@Put(':id')
-	@Auth()
-	async update(
-		@Param('id', IdValidationPipe) id: string,
-		@Body() dto: VideoDto
-	) {
-		return this.videoService.update(id, dto)
-	}
-
 	@HttpCode(200)
 	@Put('update-views/:videoId')
 	async updateCountViews(@Param('videoId', IdValidationPipe) videoId: string) {
@@ -89,6 +78,17 @@ export class VideoController {
 		@Query('type') type: 'inc' | 'dec'
 	) {
 		return this.videoService.updateReaction(videoId, type)
+	}
+
+	@UsePipes(new ValidationPipe())
+	@HttpCode(200)
+	@Put(':id')
+	@Auth()
+	async update(
+		@Param('id', IdValidationPipe) id: string,
+		@Body() dto: VideoDto
+	) {
+		return this.videoService.update(id, dto)
 	}
 
 	@HttpCode(200)
