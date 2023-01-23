@@ -38,16 +38,13 @@ export class UserService {
 		}
 
 		user.email = dto.email
-		user.password = dto.password
 		user.name = dto.name
 		user.description = dto.description
 		user.location = dto.location
 		user.bannerPath = dto.bannerPath
 		user.avatarPath = dto.avatarPath
 
-		await user.save()
-
-		return
+		return await user.save()
 	}
 
 	async getMostPopular() {
