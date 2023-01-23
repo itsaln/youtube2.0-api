@@ -3,12 +3,14 @@ import {
 	Injectable,
 	UnauthorizedException
 } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
 import { InjectModel } from 'nestjs-typegoose'
-import { compare, genSalt, hash } from 'bcryptjs'
+import { Types } from 'mongoose'
 import { ModelType } from '@typegoose/typegoose/lib/types'
+import { hash, genSalt, compare } from 'bcryptjs'
+import { JwtService } from '@nestjs/jwt'
 import { UserModel } from '@app/user/user.model'
-import { AuthDto } from '@app/auth/auth.dto'
+import { AuthDto } from '@app/auth/dto/auth.dto'
+import { RefreshTokenDto } from '@app/auth/dto/refreshToken.dto'
 
 @Injectable()
 export class AuthService {
@@ -16,15 +18,6 @@ export class AuthService {
 		@InjectModel(UserModel) private readonly UserModel: ModelType<UserModel>,
 		private readonly jwtService: JwtService
 	) {}
-
-	async login(dto: AuthDto) {
-		const user = await this.validateUser(dto)
-
-		return {
-			user: this.returnUserFields(user),
-			accessToken: await this.issueAccessToken(String(user._id))
-		}
-	}
 
 	async register(dto: AuthDto) {
 		const oldUser = await this.UserModel.findOne({ email: dto.email })
@@ -43,9 +36,38 @@ export class AuthService {
 
 		const user = await newUser.save()
 
+		const tokens = await this.issueTokenPair(user._id)
+
 		return {
 			user: this.returnUserFields(user),
-			accessToken: await this.issueAccessToken(String(user._id))
+			...tokens
+		}
+	}
+
+	async login(dto: AuthDto) {
+		const user = await this.validateUser(dto)
+		const tokens = await this.issueTokenPair(user._id)
+
+		return {
+			user: this.returnUserFields(user),
+			...tokens
+		}
+	}
+
+	async getNewTokens({ refreshToken }: RefreshTokenDto) {
+		if (!refreshToken) throw new UnauthorizedException('Please sign in!')
+
+		const result = await this.jwtService.verifyAsync(refreshToken)
+
+		if (!result) throw new UnauthorizedException('Invalid token or expired!')
+
+		const user = await this.UserModel.findById(result._id)
+
+		const tokens = await this.issueTokenPair(user._id)
+
+		return {
+			user: this.returnUserFields(user),
+			...tokens
 		}
 	}
 
@@ -55,23 +77,31 @@ export class AuthService {
 		if (!user) throw new UnauthorizedException('User not found')
 
 		const isValidPassword = await compare(dto.password, user.password)
+
 		if (!isValidPassword) throw new UnauthorizedException('Invalid password')
 
 		return user
 	}
 
-	async issueAccessToken(userId: string) {
+	async issueTokenPair(userId: Types.ObjectId) {
 		const data = { _id: userId }
 
-		return await this.jwtService.signAsync(data, {
-			expiresIn: '31d'
+		const refreshToken = await this.jwtService.signAsync(data, {
+			expiresIn: '15d'
 		})
+
+		const accessToken = await this.jwtService.signAsync(data, {
+			expiresIn: '1h'
+		})
+
+		return { refreshToken, accessToken }
 	}
 
 	returnUserFields(user: UserModel) {
 		return {
 			_id: user._id,
-			email: user.email
+			email: user.email,
+			isAdmin: user.isAdmin
 		}
 	}
 }

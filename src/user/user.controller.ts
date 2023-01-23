@@ -1,19 +1,20 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	HttpCode,
 	Param,
-	Put,
+	Put, Query,
 	UsePipes,
 	ValidationPipe
 } from '@nestjs/common'
 import { Types } from 'mongoose'
 import { Auth } from '@app/auth/decorators/auth.decorator'
-import { CurrentUser } from '@app/user/decorators/user.decorator'
+import { User } from '@app/user/decorators/user.decorator'
 import { IdValidationPipe } from '@app/pipes/id.validation.pipe'
 import { UserService } from '@app/user/user.service'
-import { UserDto } from '@app/user/user.dto'
+import { UpdateUserDto } from '@app/user/dto/update-user.dto'
 
 @Controller('users')
 export class UserController {
@@ -26,26 +27,45 @@ export class UserController {
 
 	@Get('profile')
 	@Auth()
-	getProfile(@CurrentUser('_id') _id: Types.ObjectId) {
+	getProfile(@User('_id') _id: Types.ObjectId) {
 		return this.userService.findOne(_id)
+	}
+
+	@Get()
+	@Auth('admin')
+	findAll(@Query('searchTerm') searchTerm?: string) {
+		return this.userService.findAll(searchTerm)
+	}
+
+	@Get(':id')
+	@Auth('admin')
+	findOne(@Param('id', IdValidationPipe) id: Types.ObjectId) {
+		return this.userService.findOne(id)
 	}
 
 	@UsePipes(new ValidationPipe())
 	@HttpCode(200)
 	@Put('profile')
 	@Auth()
-	updateProfile(@CurrentUser('_id') _id: Types.ObjectId, @Body() dto: UserDto) {
-		return this.userService.updateProfile(_id, dto)
+	updateProfile(@User('_id') _id: Types.ObjectId, @Body() dto: UpdateUserDto) {
+		return this.userService.update(_id, dto)
 	}
 
 	@UsePipes(new ValidationPipe())
 	@HttpCode(200)
 	@Put(':id')
-	@Auth()
+	@Auth('admin')
 	update(
-		@Param('id', IdValidationPipe) id: Types.ObjectId,
-		@Body() dto: UserDto
+		@Param('id', IdValidationPipe) id: string,
+		@Body() dto: UpdateUserDto
 	) {
-		return this.userService.updateProfile(id, dto)
+		return this.userService.update(id, dto)
+	}
+
+	@Delete(':id')
+	@HttpCode(200)
+	@Auth('admin')
+	delete(@Param('id', IdValidationPipe) id: Types.ObjectId) {
+		return this.userService.delete(id)
 	}
 }

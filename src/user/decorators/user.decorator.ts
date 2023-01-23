@@ -3,7 +3,7 @@ import { UserModel } from '@app/user/user.model'
 
 type TypeData = keyof UserModel
 
-export const CurrentUser = createParamDecorator(
+export const User = createParamDecorator(
 	(data: TypeData, ctx: ExecutionContext) => {
 		const request = ctx.switchToHttp().getRequest()
 		const user = request.user

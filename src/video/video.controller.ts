@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 import { Types } from 'mongoose'
 import { Auth } from '@app/auth/decorators/auth.decorator'
-import { CurrentUser } from '@app/user/decorators/user.decorator'
+import { User } from '@app/user/decorators/user.decorator'
 import { IdValidationPipe } from '@app/pipes/id.validation.pipe'
 import { VideoService } from '@app/video/video.service'
 import { VideoDto } from '@app/video/video.dto'
@@ -29,9 +29,7 @@ export class VideoController {
 
 	@Get('by-user-private')
 	@Auth()
-	async findAllByUserIdPrivate(
-		@CurrentUser('_id') _id: Types.ObjectId
-	) {
+	async findAllByUserIdPrivate(@User('_id') _id: Types.ObjectId) {
 		return this.videoService.findAllByUserId(_id, true)
 	}
 
@@ -62,7 +60,7 @@ export class VideoController {
 	@HttpCode(200)
 	@Post()
 	@Auth()
-	async create(@CurrentUser('_id') _id: Types.ObjectId) {
+	async create(@User('_id') _id: Types.ObjectId) {
 		return this.videoService.create(_id)
 	}
 
@@ -79,9 +77,7 @@ export class VideoController {
 
 	@HttpCode(200)
 	@Put('update-views/:videoId')
-	async updateCountViews(
-		@Param('videoId', IdValidationPipe) videoId: string
-	) {
+	async updateCountViews(@Param('videoId', IdValidationPipe) videoId: string) {
 		return this.videoService.updateCountViews(videoId)
 	}
 

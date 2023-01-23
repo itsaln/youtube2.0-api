@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common'
 import { Types } from 'mongoose'
 import { Auth } from '@app/auth/decorators/auth.decorator'
-import { CurrentUser } from '@app/user/decorators/user.decorator'
+import { User } from '@app/user/decorators/user.decorator'
 import { IdValidationPipe } from '@app/pipes/id.validation.pipe'
 import { CommentService } from '@app/comment/comment.service'
 import { CommentDto } from '@app/comment/comment.dto'
@@ -31,10 +31,7 @@ export class CommentController {
 	@HttpCode(200)
 	@Post()
 	@Auth()
-	async create(
-		@CurrentUser('_id') _id: Types.ObjectId,
-		@Body() dto: CommentDto
-	) {
+	async create(@User('_id') _id: Types.ObjectId, @Body() dto: CommentDto) {
 		return this.commentService.create(_id, dto)
 	}
 }
