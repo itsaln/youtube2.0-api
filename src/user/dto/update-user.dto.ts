@@ -18,8 +18,5 @@ export class UpdateUserDto {
 	location: string
 
 	@IsString()
-	bannerPath: string
-
-	@IsString()
 	avatarPath: string
 }

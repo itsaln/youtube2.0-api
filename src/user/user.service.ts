@@ -40,7 +40,7 @@ export class UserService {
 	}
 
 	async update(_id: Types.ObjectId | string, dto: UpdateUserDto): Promise<DocumentType<UserModel>> {
-		const user = await this.UserModel.findById(_id)
+		const user = await this.UserModel.findById(_id, '-__v')
 		if (!user) throw new NotFoundException('User not found')
 
 		const isSameUser = await this.UserModel.findOne({ email: dto.email })
@@ -57,7 +57,6 @@ export class UserService {
 		user.name = dto.name
 		user.description = dto.description
 		user.location = dto.location
-		user.bannerPath = dto.bannerPath
 		user.avatarPath = dto.avatarPath
 
 		if (dto.isAdmin || dto.isAdmin === false) user.isAdmin = dto.isAdmin
