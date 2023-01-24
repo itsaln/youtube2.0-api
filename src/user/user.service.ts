@@ -39,7 +39,7 @@ export class UserService {
 			.exec()
 	}
 
-	async update(_id: Types.ObjectId | string, dto: UpdateUserDto) {
+	async update(_id: Types.ObjectId | string, dto: UpdateUserDto): Promise<DocumentType<UserModel>> {
 		const user = await this.UserModel.findById(_id)
 		if (!user) throw new NotFoundException('User not found')
 
@@ -69,7 +69,7 @@ export class UserService {
 		return this.UserModel.findByIdAndDelete(_id).exec()
 	}
 
-	async getMostPopular() {
+	async getMostPopular(): Promise<DocumentType<UserModel>[]> {
 		return await this.UserModel.find(
 			{ subscribersCount: { $gt: 0 } },
 			'-password -__v'
