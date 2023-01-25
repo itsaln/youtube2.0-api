@@ -28,7 +28,7 @@ export class UserController {
 	@Get('profile')
 	@Auth()
 	getProfile(@User('_id') _id: Types.ObjectId) {
-		return this.userService.findOne(_id)
+		return this.userService.findOneWithVideos(_id)
 	}
 
 	@Get()

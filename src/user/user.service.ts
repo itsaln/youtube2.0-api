@@ -20,6 +20,20 @@ export class UserService {
 		return user
 	}
 
+	async findOneWithVideos(_id: Types.ObjectId) {
+		return this.UserModel.aggregate()
+			.match({ _id })
+			.lookup({
+				from: 'Video',
+				foreignField: 'user',
+				localField: '_id',
+				as: 'videos'
+			})
+			.addFields({ videosCount: { $size: '$videos' } })
+			.project({ __v: 0, password: 0, videos: 0 })
+			.exec().then(data => data[0])
+	}
+
 	async findAll(searchTerm?: string): Promise<DocumentType<UserModel>[]> {
 		let options = {}
 
@@ -39,7 +53,10 @@ export class UserService {
 			.exec()
 	}
 
-	async update(_id: Types.ObjectId | string, dto: UpdateUserDto): Promise<DocumentType<UserModel>> {
+	async update(
+		_id: Types.ObjectId | string,
+		dto: UpdateUserDto
+	): Promise<DocumentType<UserModel>> {
 		const user = await this.UserModel.findById(_id, '-__v')
 		if (!user) throw new NotFoundException('User not found')
 
