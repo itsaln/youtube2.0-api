@@ -41,10 +41,10 @@ export class VideoService {
 			}
 		}
 
-		// TODO: isPublic: true
 		return await this.VideoModel.find({ ...options, isPublic: true })
 			.select('-__v')
 			.sort({ createdAt: 'desc' })
+			.populate('user', 'name avatarPath')
 			.exec()
 	}
 
