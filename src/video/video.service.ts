@@ -44,7 +44,7 @@ export class VideoService {
 		return await this.VideoModel.find({ ...options, isPublic: true })
 			.select('-__v')
 			.sort({ createdAt: 'desc' })
-			.populate('user', 'name avatarPath')
+			.populate('user', 'name avatarPath isVerified')
 			.exec()
 	}
 
@@ -60,6 +60,7 @@ export class VideoService {
 	async getMostPopularByViews() {
 		return await this.VideoModel.find({ views: { $gt: 0 } }, '-__v')
 			.sort({ views: -1 })
+			.populate('user', 'name avatarPath isVerified')
 			.exec()
 	}
 
