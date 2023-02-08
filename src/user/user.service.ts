@@ -48,8 +48,8 @@ export class UserService {
 		}
 
 		return this.UserModel.find(options)
-			.select('-password -updatedAt -__v')
-			.sort({ createdAt: 'desc' })
+			.select('-password -__v')
+			.sort({ subscribersCount: -1 })
 			.exec()
 	}
 
