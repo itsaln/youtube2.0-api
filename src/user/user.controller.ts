@@ -32,7 +32,7 @@ export class UserController {
 	}
 
 	@Get()
-	@Auth('admin')
+	// @Auth('admin')
 	findAll(@Query('searchTerm') searchTerm?: string) {
 		return this.userService.findAll(searchTerm)
 	}
