@@ -38,7 +38,7 @@ export class UserController {
 	}
 
 	@Get(':id')
-	@Auth('admin')
+	// @Auth('admin')
 	findOne(@Param('id', IdValidationPipe) id: Types.ObjectId) {
 		return this.userService.findOne(id)
 	}

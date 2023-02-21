@@ -21,7 +21,7 @@ export class VideoService {
 		const video = await this.VideoModel.findOne(
 			isPublic ? { _id, isPublic: true } : { _id },
 			'-__v'
-		)
+		).populate('user', 'name location avatarPath isVerified subscribersCount')
 
 		if (!video) throw new UnauthorizedException('Video not found')
 
@@ -54,6 +54,7 @@ export class VideoService {
 
 		return await this.VideoModel.find(options, '-__v')
 			.sort({ createdAt: 'desc' })
+			.populate('user', 'name avatarPath isVerified')
 			.exec()
 	}
 

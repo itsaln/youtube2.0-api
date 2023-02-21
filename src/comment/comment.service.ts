@@ -15,6 +15,7 @@ export class CommentService {
 	async findAllByVideoId(videoId: Types.ObjectId) {
 		return await this.CommentModel.find({ video: videoId }, '-__v')
 			.sort({ createdAt: 'desc' })
+			.populate('user', 'name location avatarPath isVerified subscribersCount')
 			.exec()
 	}
 
