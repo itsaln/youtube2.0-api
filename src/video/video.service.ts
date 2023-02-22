@@ -14,7 +14,8 @@ import { VideoDto } from '@app/video/video.dto'
 export class VideoService {
 	constructor(
 		@InjectModel(VideoModel) private readonly VideoModel: ModelType<VideoModel>
-	) {}
+	) {
+	}
 
 	async findOne(_id: Types.ObjectId, isPublic = true) {
 		// Check authUserId === video.userId
@@ -101,12 +102,12 @@ export class VideoService {
 		return updateVideo
 	}
 
-	async updateReaction(_id: string, type?: 'inc' | 'dec') {
-		if (!type) throw new BadRequestException('type query is invalid!')
-
+	async updateReaction(_id: string) {
 		const updateVideo = await this.VideoModel.findByIdAndUpdate(
 			_id,
-			{ $inc: { likes: type === 'inc' ? 1 : -1 } },
+			// TODO: like/dislike this user
+			// { $inc: { likes: type === 'inc' ? 1 : -1 } },
+			{ $inc: { likes: 1 } },
 			{ new: true }
 		).exec()
 

@@ -20,7 +20,8 @@ import { VideoDto } from '@app/video/video.dto'
 
 @Controller('videos')
 export class VideoController {
-	constructor(private readonly videoService: VideoService) {}
+	constructor(private readonly videoService: VideoService) {
+	}
 
 	@Get('most-popular')
 	async getMostPopularByViews() {
@@ -74,10 +75,9 @@ export class VideoController {
 	@Put('update-likes/:videoId')
 	@Auth()
 	async updateReaction(
-		@Param('videoId', IdValidationPipe) videoId: string,
-		@Query('type') type: 'inc' | 'dec'
+		@Param('videoId', IdValidationPipe) videoId: string
 	) {
-		return this.videoService.updateReaction(videoId, type)
+		return this.videoService.updateReaction(videoId)
 	}
 
 	@UsePipes(new ValidationPipe())
