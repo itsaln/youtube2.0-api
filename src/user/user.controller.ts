@@ -5,7 +5,8 @@ import {
 	Get,
 	HttpCode,
 	Param,
-	Put, Query,
+	Put,
+	Query,
 	UsePipes,
 	ValidationPipe
 } from '@nestjs/common'

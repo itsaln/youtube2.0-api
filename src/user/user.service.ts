@@ -31,7 +31,8 @@ export class UserService {
 			})
 			.addFields({ videosCount: { $size: '$videos' } })
 			.project({ __v: 0, password: 0, videos: 0 })
-			.exec().then(data => data[0])
+			.exec()
+			.then(data => data[0])
 	}
 
 	async findAll(searchTerm?: string): Promise<DocumentType<UserModel>[]> {

@@ -1,5 +1,4 @@
 import {
-	BadRequestException,
 	Injectable,
 	NotFoundException,
 	UnauthorizedException
@@ -14,8 +13,7 @@ import { VideoDto } from '@app/video/video.dto'
 export class VideoService {
 	constructor(
 		@InjectModel(VideoModel) private readonly VideoModel: ModelType<VideoModel>
-	) {
-	}
+	) {}
 
 	async findOne(_id: Types.ObjectId, isPublic = true) {
 		// Check authUserId === video.userId
